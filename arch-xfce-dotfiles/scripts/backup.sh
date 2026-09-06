@@ -44,6 +44,30 @@ copy "$HOME/.gtkrc-2.0"                "$CONFIG_DIR/gtkrc-2.0"
 copy "$HOME/.config/user-dirs.dirs"    "$CONFIG_DIR/config/user-dirs.dirs"
 # xfce4-terminal's config lives under ~/.config/xfce4/terminal/ — already covered above.
 
+# Copy the actual wallpaper image files referenced by xfce4-desktop's xfconf settings
+# (the xml only stores an absolute path, the image itself usually lives outside ~/.config).
+WALLPAPER_SRC_XML="$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+WALLPAPER_DEST_DIR="$CONFIG_DIR/wallpapers"
+if [ -f "$WALLPAPER_SRC_XML" ]; then
+  echo "==> Copying wallpaper images referenced by XFCE desktop settings"
+  mkdir -p "$WALLPAPER_DEST_DIR"
+  MANIFEST="$WALLPAPER_DEST_DIR/manifest.txt"
+  : > "$MANIFEST"
+  declare -A seen_paths=()
+  i=0
+  while IFS= read -r imgpath; do
+    [ -n "$imgpath" ] && [ -f "$imgpath" ] || continue
+    [ -n "${seen_paths[$imgpath]:-}" ] && continue
+    seen_paths["$imgpath"]=1
+    i=$((i+1))
+    base="$(printf '%03d-%s' "$i" "$(basename "$imgpath")")"
+    cp -a "$imgpath" "$WALLPAPER_DEST_DIR/$base"
+    printf '%s\t%s\n' "$imgpath" "$base" >> "$MANIFEST"
+  done < <(grep -oE 'name="last-image" type="string" value="[^"]+"' "$WALLPAPER_SRC_XML" | sed -E 's/.*value="([^"]+)"/\1/')
+  [ -s "$MANIFEST" ] || rm -f "$MANIFEST"
+  echo "  $(wc -l < "$MANIFEST" 2>/dev/null || echo 0) wallpaper(s) captured."
+fi
+
 # Locate the default Firefox profile from profiles.ini (relative-path profiles only).
 FIREFOX_DIR="$HOME/.config/mozilla/firefox"
 get_firefox_profile_dir() {

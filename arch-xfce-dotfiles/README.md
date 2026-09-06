@@ -30,6 +30,9 @@ git push -u origin main
 - `config/mozilla/firefox/` — préférences Firefox du profil par défaut
   (`prefs.js`, `user.js`, moteurs de recherche, containers, `chrome/` pour
   userChrome.css/userContent.css)
+- `config/wallpapers/` — les images de fond d'écran réellement utilisées
+  (détectées dans `xfce4-desktop.xml`) + `manifest.txt` qui fait le lien
+  ancien chemin → fichier du dépôt
 
 Relancez `./scripts/backup.sh` + commit chaque fois que vous voulez capturer
 l'état actuel de la configuration.
@@ -57,9 +60,11 @@ proprement.
 - Configuration système (`/etc`), display manager (lightdm/sddm), pilotes,
   partitionnement : trop spécifique à chaque machine pour être portable sans
   risque.
-- Fonds d'écran hors de `~/.config` (ex. images dans `~/Pictures`) : ajoutez-les
-  vous-même dans `config/` si besoin et adaptez le chemin dans les réglages
-  XFCE (`xfce4-desktop`).
+- Fonds d'écran : uniquement ceux référencés par `xfce4-desktop.xml` sont
+  détectés et copiés automatiquement (`config/wallpapers/`) ; `install.sh` les
+  place dans `~/.local/share/backgrounds/dotfiles/` et réécrit les chemins
+  absolus dans les fichiers xfconf restaurés (utile si le nom d'utilisateur
+  diffère entre les deux machines).
 - **Historique, cookies, mots de passe et sessions Firefox** : volontairement
   exclus (`backup.sh` ne copie que `prefs.js`, `user.js`, `search.json.mozlz4`,
   `containers.json`, `handlers.json` et `chrome/`), pour ne pas finir dans un

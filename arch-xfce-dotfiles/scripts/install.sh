@@ -55,6 +55,31 @@ restore "$CONFIG_DIR/gtkrc-2.0"                  "$HOME/.gtkrc-2.0"
 restore "$CONFIG_DIR/config/user-dirs.dirs"      "$HOME/.config/user-dirs.dirs"
 # xfce4-terminal's config is restored as part of config/xfce4/ above.
 
+# Restore wallpaper images and rewrite the (now stale, source-machine) absolute
+# paths baked into the xfconf xml files we just restored above.
+WALLPAPER_MANIFEST="$CONFIG_DIR/wallpapers/manifest.txt"
+WALLPAPER_TARGET_DIR="$HOME/.local/share/backgrounds/dotfiles"
+if [ -f "$WALLPAPER_MANIFEST" ]; then
+  echo "==> Restoring wallpapers"
+  mkdir -p "$WALLPAPER_TARGET_DIR"
+
+  sed_escape_pattern() { printf '%s' "$1" | sed -e 's/[.[\*^$#\\]/\\&/g'; }
+  sed_escape_replacement() { printf '%s' "$1" | sed -e 's/[#&\\]/\\&/g'; }
+
+  while IFS=$'\t' read -r orig base; do
+    [ -n "$orig" ] && [ -n "$base" ] || continue
+    cp -a "$CONFIG_DIR/wallpapers/$base" "$WALLPAPER_TARGET_DIR/$base"
+    newpath="$WALLPAPER_TARGET_DIR/$base"
+    esc_old="$(sed_escape_pattern "$orig")"
+    esc_new="$(sed_escape_replacement "$newpath")"
+    find "$HOME/.config/xfce4/xfconf/xfce-perchannel-xml" -name '*.xml' -print0 2>/dev/null \
+      | xargs -0 -r grep -lF "$orig" \
+      | while IFS= read -r f; do
+          sed -i "s#${esc_old}#${esc_new}#g" "$f"
+        done
+  done < "$WALLPAPER_MANIFEST"
+fi
+
 FIREFOX_DIR="$HOME/.config/mozilla/firefox"
 get_firefox_profile_dir() {
   local ini="$FIREFOX_DIR/profiles.ini"
@@ -92,4 +117,4 @@ fi
 command -v fc-cache >/dev/null 2>&1 && fc-cache -f "$HOME/.fonts" "$HOME/.local/share/fonts" >/dev/null 2>&1 || true
 
 echo "==> Done. Log out and back in (or reboot) for everything to apply cleanly."
-echo "If XFCE is already running, you can try: xfce4-panel -r && xfsettingsd --replace &"
+echo "If XFCE is already running, you can try: xfce4-panel -r && xfsettingsd --replace & xfdesktop --reload"
