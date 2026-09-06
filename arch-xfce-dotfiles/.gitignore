@@ -1,0 +1,14 @@
+*.lock
+**/thumbnails/
+**/Cache/
+**/cache/
+
+# Never accidentally commit sensitive Firefox data (backup.sh doesn't copy these,
+# but this guards against a stray full-profile copy).
+**/mozilla/**/cookies.sqlite
+**/mozilla/**/logins.json
+**/mozilla/**/key4.db
+**/mozilla/**/cert9.db
+**/mozilla/**/places.sqlite
+**/mozilla/**/sessionstore*
+**/mozilla/**/storage/

@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<channel name="xfce4-terminal" version="1.0">
+  <property name="color-foreground" type="string" value="#EBDBB2"/>
+  <property name="color-background" type="string" value="#1D2021"/>
+  <property name="color-background-vary" type="bool" value="false"/>
+  <property name="color-cursor-foreground" type="string" value=""/>
+  <property name="color-cursor" type="string" value="#EBDBB2"/>
+  <property name="color-cursor-use-default" type="bool" value="false"/>
+  <property name="color-selection" type="string" value=""/>
+  <property name="color-selection-background" type="string" value=""/>
+  <property name="color-selection-use-default" type="bool" value="true"/>
+  <property name="color-bold" type="string" value=""/>
+  <property name="color-bold-use-default" type="bool" value="true"/>
+  <property name="color-palette" type="string" value="#1D2021;#CC241D;#98971A;#D79921;#458588;#B16286;#689D6A;#A89984;#928374;#FB4934;#B8BB26;#FABD2F;#83A598;#D3869B;#8EC07C;#EBDBB2"/>
+  <property name="color-bold-is-bright" type="bool" value="true"/>
+  <property name="color-use-theme" type="bool" value="false"/>
+  <property name="tab-activity-color" type="string" value="#aa0000"/>
+  <property name="font-name" type="string" value="JetBrainsMono Nerd Font Mono Semi-Bold 11"/>
+  <property name="cell-width-scale" type="double" value="1"/>
+  <property name="background-mode" type="string" value="TERMINAL_BACKGROUND_TRANSPARENT"/>
+  <property name="background-darkness" type="double" value="0.97999999999999998"/>
+  <property name="scrolling-bar" type="string" value="TERMINAL_SCROLLBAR_NONE"/>
+  <property name="misc-cursor-shape" type="string" value="TERMINAL_CURSOR_SHAPE_BLOCK"/>
+  <property name="misc-cursor-blinks" type="bool" value="true"/>
+  <property name="font-use-system" type="bool" value="false"/>
+  <property name="misc-menubar-default" type="bool" value="false"/>
+  <property name="misc-borders-default" type="bool" value="true"/>
+</channel>
